@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Seoul Weather</title>
+<title>Weather</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -42,14 +40,7 @@ body {
   margin-top: 4px;
 }
 
-.desc {
-  text-align: center;
-  font-size: clamp(15px, 2.5vw, 22px);
-  opacity: 0.9;
-  margin-top: 6px;
-}
-
-.highlow {
+.desc, .highlow {
   text-align: center;
   font-size: clamp(14px, 2.4vw, 20px);
   margin-top: 6px;
@@ -68,21 +59,28 @@ body {
   font-size: 13px;
   font-weight: 700;
   opacity: 0.8;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.header-row,
+.day-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-row {
+  font-size: clamp(10px, 1.8vw, 13px);
+  font-weight: 700;
+  opacity: 0.75;
+  padding-bottom: 8px;
 }
 
 .day-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 36px 1fr 1fr;
-  align-items: center;
-  gap: 8px;
   padding: 9px 0;
   border-top: 1px solid rgba(255,255,255,0.25);
   font-size: clamp(13px, 2.4vw, 18px);
-}
-
-.day-row:first-of-type {
-  border-top: none;
 }
 
 .day {
@@ -90,21 +88,24 @@ body {
 }
 
 .date {
-  opacity: 0.82;
+  opacity: 0.85;
 }
 
-.icon {
+.weather {
   text-align: center;
   font-size: 22px;
 }
 
-.low {
+.low,
+.high {
   text-align: right;
+}
+
+.low {
   opacity: 0.75;
 }
 
 .high {
-  text-align: right;
   font-weight: 600;
 }
 
@@ -119,44 +120,136 @@ body {
 <body>
 
 <div class="weather-card">
-  <div class="city">Seoul</div>
+  <div class="city" id="cityName">Seoul</div>
   <div class="temp" id="currentTemp">--°</div>
   <div class="desc" id="weatherDesc">Loading...</div>
   <div class="highlow" id="todayHighLow">H: --°  L: --°</div>
 
   <div class="forecast">
-    <div class="forecast-title">7-DAY FORECAST</div>
-    <div id="forecastList" class="loading">날씨를 불러오는 중...</div>
+    <div class="forecast-title" id="forecastTitle">7-DAY FORECAST</div>
+
+    <div class="header-row">
+      <div id="labelDay">요일</div>
+      <div id="labelDate">날짜</div>
+      <div id="labelWeather">날씨</div>
+      <div id="labelLow">최저온도</div>
+      <div id="labelHigh">최고온도</div>
+    </div>
+
+    <div id="forecastList" class="loading">Loading...</div>
   </div>
 </div>
 
 <script>
-const weatherCodeMap = {
-  0: ["맑음", "☀️"],
-  1: ["대체로 맑음", "🌤️"],
-  2: ["부분적으로 흐림", "⛅"],
-  3: ["흐림", "☁️"],
-  45: ["안개", "🌫️"],
-  48: ["안개", "🌫️"],
-  51: ["약한 이슬비", "🌦️"],
-  53: ["이슬비", "🌦️"],
-  55: ["강한 이슬비", "🌧️"],
-  61: ["약한 비", "🌧️"],
-  63: ["비", "🌧️"],
-  65: ["강한 비", "🌧️"],
-  71: ["약한 눈", "🌨️"],
-  73: ["눈", "🌨️"],
-  75: ["강한 눈", "❄️"],
-  80: ["소나기", "🌦️"],
-  81: ["소나기", "🌧️"],
-  82: ["강한 소나기", "⛈️"],
-  95: ["천둥번개", "⛈️"]
+const locale = navigator.language || "ko-KR";
+
+const labels = {
+  ko: {
+    city: "서울",
+    forecast: "7일 예보",
+    day: "요일",
+    date: "날짜",
+    weather: "날씨",
+    low: "최저온도",
+    high: "최고온도",
+    today: "오늘",
+    loading: "날씨를 불러오는 중...",
+    fail: "날씨 정보를 불러오지 못했습니다.",
+    highShort: "최고",
+    lowShort: "최저"
+  },
+  en: {
+    city: "Seoul",
+    forecast: "7-DAY FORECAST",
+    day: "Day",
+    date: "Date",
+    weather: "Weather",
+    low: "Low",
+    high: "High",
+    today: "Today",
+    loading: "Loading weather...",
+    fail: "Could not load weather.",
+    highShort: "H",
+    lowShort: "L"
+  },
+  zh: {
+    city: "首尔",
+    forecast: "7日天气预报",
+    day: "星期",
+    date: "日期",
+    weather: "天气",
+    low: "最低温",
+    high: "最高温",
+    today: "今天",
+    loading: "正在加载天气...",
+    fail: "无法加载天气信息。",
+    highShort: "最高",
+    lowShort: "最低"
+  },
+  ja: {
+    city: "ソウル",
+    forecast: "7日間の天気",
+    day: "曜日",
+    date: "日付",
+    weather: "天気",
+    low: "最低気温",
+    high: "最高気温",
+    today: "今日",
+    loading: "天気を読み込み中...",
+    fail: "天気情報を取得できませんでした。",
+    highShort: "最高",
+    lowShort: "最低"
+  }
 };
 
-const daysKo = ["일", "월", "화", "수", "목", "금", "토"];
+function getLang() {
+  if (locale.startsWith("ko")) return "ko";
+  if (locale.startsWith("zh")) return "zh";
+  if (locale.startsWith("ja")) return "ja";
+  return "en";
+}
+
+const lang = getLang();
+const t = labels[lang];
+
+document.documentElement.lang = locale;
+document.getElementById("cityName").innerText = t.city;
+document.getElementById("forecastTitle").innerText = t.forecast;
+document.getElementById("labelDay").innerText = t.day;
+document.getElementById("labelDate").innerText = t.date;
+document.getElementById("labelWeather").innerText = t.weather;
+document.getElementById("labelLow").innerText = t.low;
+document.getElementById("labelHigh").innerText = t.high;
+document.getElementById("forecastList").innerText = t.loading;
+
+const weatherCodeMap = {
+  0: ["Clear", "맑음", "晴", "晴れ", "☀️"],
+  1: ["Mainly clear", "대체로 맑음", "大致晴朗", "ほぼ晴れ", "🌤️"],
+  2: ["Partly cloudy", "부분적으로 흐림", "局部多云", "一部曇り", "⛅"],
+  3: ["Cloudy", "흐림", "多云", "曇り", "☁️"],
+  45: ["Fog", "안개", "雾", "霧", "🌫️"],
+  48: ["Fog", "안개", "雾", "霧", "🌫️"],
+  51: ["Light drizzle", "약한 이슬비", "小毛毛雨", "弱い霧雨", "🌦️"],
+  53: ["Drizzle", "이슬비", "毛毛雨", "霧雨", "🌦️"],
+  55: ["Heavy drizzle", "강한 이슬비", "强毛毛雨", "強い霧雨", "🌧️"],
+  61: ["Light rain", "약한 비", "小雨", "小雨", "🌧️"],
+  63: ["Rain", "비", "雨", "雨", "🌧️"],
+  65: ["Heavy rain", "강한 비", "大雨", "大雨", "🌧️"],
+  71: ["Light snow", "약한 눈", "小雪", "小雪", "🌨️"],
+  73: ["Snow", "눈", "雪", "雪", "🌨️"],
+  75: ["Heavy snow", "강한 눈", "大雪", "大雪", "❄️"],
+  80: ["Rain showers", "소나기", "阵雨", "にわか雨", "🌦️"],
+  81: ["Rain showers", "소나기", "阵雨", "にわか雨", "🌧️"],
+  82: ["Heavy showers", "강한 소나기", "强阵雨", "強いにわか雨", "⛈️"],
+  95: ["Thunderstorm", "천둥번개", "雷暴", "雷雨", "⛈️"]
+};
 
 function getWeatherInfo(code) {
-  return weatherCodeMap[code] || ["날씨 정보", "🌤️"];
+  const info = weatherCodeMap[code] || weatherCodeMap[1];
+  if (lang === "ko") return [info[1], info[4]];
+  if (lang === "zh") return [info[2], info[4]];
+  if (lang === "ja") return [info[3], info[4]];
+  return [info[0], info[4]];
 }
 
 async function loadWeather() {
@@ -181,16 +274,25 @@ async function loadWeather() {
 
     const todayHigh = Math.round(data.daily.temperature_2m_max[0]);
     const todayLow = Math.round(data.daily.temperature_2m_min[0]);
+
     document.getElementById("todayHighLow").innerText =
-      "H: " + todayHigh + "°  L: " + todayLow + "°";
+      `${t.highShort}: ${todayHigh}°  ${t.lowShort}: ${todayLow}°`;
 
     const list = document.getElementById("forecastList");
+    list.className = "";
     list.innerHTML = "";
 
     for (let i = 0; i < 7; i++) {
       const dateObj = new Date(data.daily.time[i]);
-      const dayName = i === 0 ? "오늘" : daysKo[dateObj.getDay()];
-      const dateText = (dateObj.getMonth() + 1) + "/" + dateObj.getDate();
+      const dayName = i === 0
+        ? t.today
+        : new Intl.DateTimeFormat(locale, { weekday: "short" }).format(dateObj);
+
+      const dateText = new Intl.DateTimeFormat(locale, {
+        month: "numeric",
+        day: "numeric"
+      }).format(dateObj);
+
       const code = data.daily.weather_code[i];
       const [, icon] = getWeatherInfo(code);
 
@@ -202,7 +304,7 @@ async function loadWeather() {
       row.innerHTML = `
         <div class="day">${dayName}</div>
         <div class="date">${dateText}</div>
-        <div class="icon">${icon}</div>
+        <div class="weather">${icon}</div>
         <div class="low">${low}°</div>
         <div class="high">${high}°</div>
       `;
@@ -210,8 +312,7 @@ async function loadWeather() {
       list.appendChild(row);
     }
   } catch (error) {
-    document.getElementById("forecastList").innerText =
-      "날씨 정보를 불러오지 못했습니다.";
+    document.getElementById("forecastList").innerText = t.fail;
   }
 }
 
