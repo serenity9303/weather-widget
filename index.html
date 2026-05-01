@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <style>
-    body {
-      margin: 0;
-      background: transparent;
-    }
-  </style>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  background: transparent;
+  font-family: Arial, sans-serif;
+}
+
+.date {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+</style>
 </head>
+
 <body>
+
+<div class="date" id="today"></div>
 
 <a class="weatherwidget-io"
    href="https://forecast7.com/en/37d57126d98/seoul/"
    data-label_1="SEOUL"
    data-label_2="WEATHER"
    data-theme="clear">
-   SEOUL WEATHER
 </a>
+
+<script>
+const today = new Date();
+const options = { year: 'numeric', month: 'long', day: 'numeric' };
+document.getElementById("today").innerText =
+  today.toLocaleDateString('ko-KR', options);
+</script>
 
 <script>
 !function(d,s,id){
