@@ -16,18 +16,19 @@ body {
 }
 
 .date-row {
- position: absolute;
-  left: 28%;
-  right: 1%;
-  bottom: clamp(24px, 4vw, 34px);
+  position: absolute;
+
+  /* 🔥 위치도 반응형으로 */
+  left: clamp(24%, 28%, 30%);
+  right: clamp(0.5%, 1%, 2%);
+  bottom: clamp(20px, 4vw, 34px);
 
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, 1fr);
 
   font-size: clamp(8px, 1.1vw, 11px);
   font-weight: 600;
   color: #555;
-  line-height: 1;
 
   z-index: 10;
   pointer-events: none;
@@ -35,7 +36,10 @@ body {
 
 .date-item {
   text-align: left;
-  padding-left: clamp(4px, 2.2vw, 44px);
+
+  /* 🔥 위치까지 같이 움직이게 */
+  transform: translateX(clamp(2px, 1.8vw, 42px));
+
   white-space: nowrap;
 }
 </style>
