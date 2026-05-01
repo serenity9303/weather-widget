@@ -32,12 +32,23 @@ body {
   font-weight: 500;
 }
 
+.temp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  margin-top: 6px;
+}
+
 .temp {
-  text-align: center;
+  text-align: right;
   font-size: clamp(58px, 13vw, 118px);
   font-weight: 200;
   line-height: 1;
-  margin-top: 4px;
+}
+
+.icon-big {
+  text-align: left;
+  font-size: clamp(40px, 10vw, 90px);
 }
 
 .desc, .highlow {
@@ -67,7 +78,6 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
-  gap: 8px;
 }
 
 .header-row {
@@ -114,6 +124,18 @@ body {
   padding: 30px;
   font-size: 16px;
 }
+.header-row div:nth-child(3),
+.day-row .weather {
+  text-align: center;
+}
+
+.header-row div:nth-child(4),
+.header-row div:nth-child(5),
+.day-row .low,
+.day-row .high {
+  text-align: right;
+}
+  
 </style>
 </head>
 
@@ -121,8 +143,12 @@ body {
 
 <div class="weather-card">
   <div class="city" id="cityName">Seoul</div>
+<div class="temp-row">
   <div class="temp" id="currentTemp">--°</div>
-  <div class="desc" id="weatherDesc">Loading...</div>
+  <div class="icon-big" id="currentIcon">☁️</div>
+</div>
+
+<div class="desc" id="weatherDesc">Loading...</div>
   <div class="highlow" id="todayHighLow">H: --°  L: --°</div>
 
   <div class="forecast">
@@ -267,9 +293,10 @@ async function loadWeather() {
 
     const currentTemp = Math.round(data.current.temperature_2m);
     const currentCode = data.current.weather_code;
-    const [desc] = getWeatherInfo(currentCode);
+    const [desc, icon] = getWeatherInfo(currentCode);
 
     document.getElementById("currentTemp").innerText = currentTemp + "°";
+    document.getElementById("currentIcon").innerText = icon;
     document.getElementById("weatherDesc").innerText = desc;
 
     const todayHigh = Math.round(data.daily.temperature_2m_max[0]);
