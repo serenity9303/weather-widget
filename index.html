@@ -6,112 +6,147 @@
 <title>Weather</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --space-xs: clamp(0.25rem, 0.8vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 1.4vw, 0.9rem);
+  --space-md: clamp(0.8rem, 2vw, 1.3rem);
+  --space-lg: clamp(1.1rem, 3vw, 2rem);
+
+  --radius-card: clamp(1.2rem, 4vw, 2.2rem);
+  --radius-inner: clamp(0.9rem, 3vw, 1.5rem);
+
+  --font-xs: clamp(0.62rem, 1.7vw, 0.82rem);
+  --font-sm: clamp(0.78rem, 2vw, 1rem);
+  --font-md: clamp(0.9rem, 2.5vw, 1.25rem);
+  --font-lg: clamp(1.4rem, 5vw, 2.7rem);
+  --font-temp: clamp(3.5rem, 15vw, 7.4rem);
+  --font-icon: clamp(2.5rem, 10vw, 5.6rem);
+}
 
 body {
   margin: 0;
-  padding: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
+  padding: var(--space-sm);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   background: transparent;
   color: white;
 }
 
 .weather-card {
   width: 100%;
-  max-width: 760px;
+  max-width: 48rem;
   margin: 0 auto;
-  padding: clamp(18px, 4vw, 34px);
-  border-radius: 32px;
+  padding: var(--space-lg);
+  border-radius: var(--radius-card);
   background: linear-gradient(180deg, #5f8fd9 0%, #8fb7ee 100%);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+  box-shadow: 0 0.8rem 2.2rem rgba(0,0,0,0.18);
+  overflow: hidden;
 }
 
 .city {
   text-align: center;
-  font-size: clamp(24px, 5vw, 42px);
+  font-size: var(--font-lg);
   font-weight: 500;
+  line-height: 1.1;
 }
 
 .temp-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  margin-top: 6px;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
 }
 
 .temp {
   text-align: right;
-  font-size: clamp(58px, 13vw, 118px);
+  font-size: var(--font-temp);
   font-weight: 200;
   line-height: 1;
 }
 
 .icon-big {
   text-align: left;
-  font-size: clamp(40px, 10vw, 90px);
-
-  /* 🔥 이 줄 추가 */
-  margin-left: clamp(6px, 2vw, 20px);
+  font-size: var(--font-icon);
+  line-height: 1;
+  transform: translateX(clamp(0.3rem, 2vw, 1.3rem));
 }
 
-.desc, .highlow {
+.desc,
+.highlow {
   text-align: center;
-  font-size: clamp(14px, 2.4vw, 20px);
-  margin-top: 6px;
+  font-size: var(--font-md);
+  margin-top: var(--space-xs);
   opacity: 0.95;
+  line-height: 1.3;
 }
 
 .forecast {
-  margin-top: 28px;
-  padding: 14px 18px;
-  border-radius: 22px;
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  border-radius: var(--radius-inner);
   background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
 }
 
 .forecast-title {
-  font-size: 13px;
+  font-size: var(--font-xs);
   font-weight: 700;
   opacity: 0.8;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.04em;
 }
 
 .header-row,
 .day-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    minmax(0, 0.8fr)
+    minmax(0, 1fr)
+    minmax(0, 1fr);
   align-items: center;
+  column-gap: var(--space-sm);
 }
 
 .header-row {
-  font-size: clamp(10px, 1.8vw, 13px);
+  font-size: var(--font-xs);
   font-weight: 700;
-  opacity: 0.75;
-  padding-bottom: 8px;
+  opacity: 0.78;
+  padding-bottom: var(--space-sm);
 }
 
 .day-row {
-  padding: 9px 0;
-  border-top: 1px solid rgba(255,255,255,0.25);
-  font-size: clamp(13px, 2.4vw, 18px);
+  padding: var(--space-sm) 0;
+  border-top: 0.06rem solid rgba(255,255,255,0.25);
+  font-size: var(--font-md);
 }
 
 .day {
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .date {
   opacity: 0.85;
+  white-space: nowrap;
 }
 
 .weather {
   text-align: center;
-  font-size: 22px;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  line-height: 1;
 }
 
 .low,
 .high {
   text-align: right;
+  white-space: nowrap;
 }
 
 .low {
@@ -122,23 +157,49 @@ body {
   font-weight: 600;
 }
 
-.loading {
-  text-align: center;
-  padding: 30px;
-  font-size: 16px;
-}
-.header-row div:nth-child(3),
-.day-row .weather {
+.header-row div:nth-child(3) {
   text-align: center;
 }
 
 .header-row div:nth-child(4),
-.header-row div:nth-child(5),
-.day-row .low,
-.day-row .high {
+.header-row div:nth-child(5) {
   text-align: right;
 }
-  
+
+.loading {
+  text-align: center;
+  padding: var(--space-lg);
+  font-size: var(--font-sm);
+}
+
+@media (max-width: 28rem) {
+  .weather-card {
+    padding: var(--space-md);
+  }
+
+  .forecast {
+    padding: var(--space-sm);
+  }
+
+  .header-row,
+  .day-row {
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(0, 1fr)
+      minmax(0, 0.7fr)
+      minmax(0, 0.9fr)
+      minmax(0, 0.9fr);
+    column-gap: var(--space-xs);
+  }
+
+  .header-row {
+    font-size: clamp(0.52rem, 2.4vw, 0.68rem);
+  }
+
+  .day-row {
+    font-size: clamp(0.72rem, 3.2vw, 0.9rem);
+  }
+}
 </style>
 </head>
 
@@ -146,13 +207,14 @@ body {
 
 <div class="weather-card">
   <div class="city" id="cityName">Seoul</div>
-<div class="temp-row">
-  <div class="temp" id="currentTemp">--°</div>
-  <div class="icon-big" id="currentIcon">☁️</div>
-</div>
 
-<div class="desc" id="weatherDesc">Loading...</div>
-  <div class="highlow" id="todayHighLow">H: --°  L: --°</div>
+  <div class="temp-row">
+    <div class="temp" id="currentTemp">--°</div>
+    <div class="icon-big" id="currentIcon">☁️</div>
+  </div>
+
+  <div class="desc" id="weatherDesc">Loading...</div>
+  <div class="highlow" id="todayHighLow">H: --° L: --°</div>
 
   <div class="forecast">
     <div class="forecast-title" id="forecastTitle">7-DAY FORECAST</div>
@@ -314,6 +376,7 @@ async function loadWeather() {
 
     for (let i = 0; i < 7; i++) {
       const dateObj = new Date(data.daily.time[i]);
+
       const dayName = i === 0
         ? t.today
         : new Intl.DateTimeFormat(locale, { weekday: "short" }).format(dateObj);
