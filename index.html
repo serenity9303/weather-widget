@@ -9,17 +9,19 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.date {
-  text-align: center;
-  font-size: 14px;
-  margin-bottom: 5px;
+/* 날짜 줄 */
+.dates {
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
+  margin-bottom: 4px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="date" id="today"></div>
+<div class="dates" id="dates"></div>
 
 <a class="weatherwidget-io"
    href="https://forecast7.com/en/37d57126d98/seoul/"
@@ -29,10 +31,18 @@ body {
 </a>
 
 <script>
+// 오늘 기준으로 5일 날짜 만들기
+const container = document.getElementById("dates");
 const today = new Date();
-const options = { year: 'numeric', month: 'long', day: 'numeric' };
-document.getElementById("today").innerText =
-  today.toLocaleDateString('ko-KR', options);
+
+for (let i = 0; i < 5; i++) {
+  let d = new Date();
+  d.setDate(today.getDate() + i);
+
+  let span = document.createElement("div");
+  span.innerText = d.getDate() + "일";
+  container.appendChild(span);
+}
 </script>
 
 <script>
